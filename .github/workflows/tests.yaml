@@ -23,7 +23,6 @@ jobs:
 
       - name: Run Tests
         run: |
-          golint -set_exit_status ./...
           go test -race --coverprofile=coverage.coverprofile --covermode=atomic ./...
 
       - name: Upload Coverage to Codecov
