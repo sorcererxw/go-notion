@@ -8,10 +8,10 @@ const endpoint = "https://api.notion.com"
 const apiVersion = "2021-05-13"
 
 type QueryDatabaseParam struct {
-	Filter      *Filter
-	Sorts       []*Sort
-	StartCursor string
-	PageSize    int32
+	Filter      *Filter `json:"filter,omitempty"`
+	Sorts       []*Sort `json:"sorts,omitempty"`
+	StartCursor string  `json:"start_cursor,omitempty"`
+	PageSize    int32   `json:"page_size,omitempty"`
 }
 
 type SearchParam struct {

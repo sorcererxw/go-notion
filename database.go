@@ -3,7 +3,7 @@ package notion
 import "time"
 
 type Database struct {
-	Object         Object              `json:"object,omitempty"`
+	Object         ObjectType          `json:"object,omitempty"`
 	ID             string              `json:"id,omitempty"`
 	CreatedTime    time.Time           `json:"created_time,omitempty"`
 	LastEditedTime time.Time           `json:"last_edited_time,omitempty"`
@@ -38,23 +38,24 @@ const (
 type Property struct {
 	ID             string       `json:"id,omitempty"`
 	Type           PropertyType `json:"type,omitempty"`
-	Title          *struct{}    `json:"title,omitempty"`
-	Text           *struct{}    `json:"text,omitempty"`
+	Title          []*RichText  `json:"title,omitempty"`
+	RichText       []*RichText  `json:"rich_text,omitempty"`
 	Number         *Number      `json:"number,omitempty"`
 	Select         *Select      `json:"select,omitempty"`
 	MultiSelect    *MultiSelect `json:"multi_select,omitempty"`
-	Checkbox       *struct{}    `json:"checkbox,omitempty"`
-	Email          *struct{}    `json:"email,omitempty"`
-	PhoneNumber    *struct{}    `json:"phone_number,omitempty"`
+	Checkbox       bool         `json:"checkbox,omitempty"`
+	URL            string       `json:"url,omitempty"`
+	Email          string       `json:"email,omitempty"`
+	PhoneNumber    string       `json:"phone_number,omitempty"`
 	Formula        *Formula     `json:"formula,omitempty"`
-	Relation       *Relation    `json:"relation,omitempty"`
+	Relation       []*Relation  `json:"relation,omitempty"`
 	Rollup         *Rollup      `json:"rollup,omitempty"`
-	People         *struct{}    `json:"people,omitempty"`
-	Files          *struct{}    `json:"files,omitempty"`
-	CreatedTime    *struct{}    `json:"created_time,omitempty"`
-	CreatedBy      *struct{}    `json:"created_by,omitempty"`
-	LastEditedTime *struct{}    `json:"last_edited_time,omitempty"`
-	LastEditedBy   *struct{}    `json:"last_edited_by,omitempty"`
+	People         []*struct{}  `json:"people,omitempty"`
+	Files          []*struct{}  `json:"files,omitempty"`
+	CreatedTime    *time.Time   `json:"created_time,omitempty"`
+	CreatedBy      *User        `json:"created_by,omitempty"`
+	LastEditedTime *time.Time   `json:"last_edited_time,omitempty"`
+	LastEditedBy   *User        `json:"last_edited_by,omitempty"`
 }
 
 type NumberFormat string
