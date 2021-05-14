@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type Client struct {
@@ -17,8 +18,10 @@ type Client struct {
 
 func NewClient(token string) API {
 	return &Client{
-		token:      token,
-		httpclient: &http.Client{},
+		token: token,
+		httpclient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}
 }
 
@@ -54,11 +57,11 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	return &page, nil
 }
 
-func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*PageProperty, children ...*Block) (*Page, error) {
+func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*Property, children ...*Block) (*Page, error) {
 	body := struct {
-		Parent     Parent                   `json:"parent"`
-		Properties map[string]*PageProperty `json:"properties"`
-		Children   []*Block                 `json:"children"`
+		Parent     Parent               `json:"parent,omitempty"`
+		Properties map[string]*Property `json:"properties,omitempty"`
+		Children   []*Block             `json:"children,omitempty"`
 	}{
 		Parent:     parent,
 		Properties: properties,
@@ -71,9 +74,9 @@ func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[s
 	return &page, nil
 }
 
-func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PageProperty) (*Page, error) {
+func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*Property) (*Page, error) {
 	body := struct {
-		Properties map[string]*PageProperty `json:"properties"`
+		Properties map[string]*Property `json:"properties,omitempty"`
 	}{
 		Properties: properties,
 	}
@@ -157,10 +160,15 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 
 	defer rsp.Body.Close()
 
-	if rsp.StatusCode >= 300 {
+	if rsp.StatusCode >= 400 {
 		if rsp.Header.Get("Content-Type") != "application/json" {
-			return errors.New("")
+			return fmt.Errorf("HTTP/%d: http request error", rsp.StatusCode)
 		}
+		var e Error
+		if err := json.NewDecoder(rsp.Body).Decode(&e); err != nil {
+			return err
+		}
+		return &e
 	}
 
 	if out != nil {

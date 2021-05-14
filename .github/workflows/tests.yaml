@@ -1,0 +1,33 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        go: [ 1.16 ]
+    name: ${{ matrix.os }} @ Go ${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Run Tests
+        run: |
+          golint -set_exit_status ./...
+          go test -race --coverprofile=coverage.coverprofile --covermode=atomic ./...
+
+      - name: Upload Coverage to Codecov
+        if: success() && matrix.go == 1.16 && matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: false
