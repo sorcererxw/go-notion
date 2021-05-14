@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"strconv"
+	"time"
 )
 
 type Client struct {
@@ -15,10 +17,16 @@ type Client struct {
 	httpclient *http.Client
 }
 
-func NewClient(token string) API {
+type Settings struct {
+	Token string
+}
+
+func NewClient(settings Settings) API {
 	return &Client{
-		token:      token,
-		httpclient: &http.Client{},
+		token: settings.Token,
+		httpclient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}
 }
 
@@ -40,7 +48,7 @@ func (c *Client) QueryDatabase(ctx context.Context, databaseID string, param Que
 
 func (c *Client) ListDatabases(ctx context.Context, pageSize int32, startCursor string) ([]*Database, string, bool, error) {
 	var result List
-	if err := c.request(ctx, http.MethodPost, "/v1/databases", nil, &result, c.concatPagination(pageSize, startCursor)); err != nil {
+	if err := c.request(ctx, http.MethodGet, "/v1/databases", nil, &result, c.concatPagination(pageSize, startCursor)); err != nil {
 		return nil, "", false, err
 	}
 	return result.Results.Databases(), result.NextCursor, result.HasMore, nil
@@ -54,26 +62,26 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	return &page, nil
 }
 
-func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*PageProperty, children ...*Block) (*Page, error) {
+func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*Property, children ...*Block) (*Page, error) {
 	body := struct {
-		Parent     Parent                   `json:"parent"`
-		Properties map[string]*PageProperty `json:"properties"`
-		Children   []*Block                 `json:"children"`
+		Parent     Parent               `json:"parent,omitempty"`
+		Properties map[string]*Property `json:"properties"`
+		Children   []*Block             `json:"children,omitempty"`
 	}{
 		Parent:     parent,
 		Properties: properties,
 		Children:   children,
 	}
 	var page Page
-	if err := c.request(ctx, http.MethodGet, "/v1/pages", body, &page); err != nil {
+	if err := c.request(ctx, http.MethodPost, "/v1/pages", body, &page); err != nil {
 		return nil, err
 	}
 	return &page, nil
 }
 
-func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PageProperty) (*Page, error) {
+func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*Property) (*Page, error) {
 	body := struct {
-		Properties map[string]*PageProperty `json:"properties"`
+		Properties map[string]*Property `json:"properties,omitempty"`
 	}{
 		Properties: properties,
 	}
@@ -95,9 +103,7 @@ func (c *Client) RetrieveBlockChildren(ctx context.Context, blockID string, page
 func (c *Client) AppendBlockChildren(ctx context.Context, blockID string, children ...*Block) error {
 	body := struct {
 		Children []*Block `json:"children"`
-	}{
-		Children: children,
-	}
+	}{Children: append(make([]*Block, 0), children...)}
 	var block Block
 	if err := c.request(ctx, http.MethodPatch, "/v1/blocks/"+blockID+"/children", body, &block); err != nil {
 		return err
@@ -145,10 +151,14 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 
 	req.Header.Add("Authorization", "Bearer "+c.token)
 	req.Header.Add("Notion-Version", apiVersion)
+	req.Header.Add("Content-Type", "application/json")
 
 	for _, fn := range fns {
 		fn(req)
 	}
+
+	dump, _ := httputil.DumpRequestOut(req, true)
+	fmt.Println(string(dump))
 
 	rsp, err := c.httpclient.Do(req)
 	if err != nil {
@@ -157,10 +167,12 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 
 	defer rsp.Body.Close()
 
-	if rsp.StatusCode >= 300 {
-		if rsp.Header.Get("Content-Type") != "application/json" {
-			return errors.New("")
+	if rsp.StatusCode >= 400 {
+		var e Error
+		if err := json.NewDecoder(rsp.Body).Decode(&e); err != nil {
+			return err
 		}
+		return &e
 	}
 
 	if out != nil {
@@ -177,8 +189,12 @@ func (c *Client) concatPagination(pageSize int32, startCursor string) func(req *
 			return
 		}
 		q := req.URL.Query()
-		q.Add("page_size", strconv.Itoa(int(pageSize)))
-		q.Add("start_cursor", startCursor)
+		if pageSize > 0 {
+			q.Add("page_size", strconv.Itoa(int(pageSize)))
+		}
+		if startCursor != "" {
+			q.Add("start_cursor", startCursor)
+		}
 		req.URL.RawQuery = q.Encode()
 	}
 }

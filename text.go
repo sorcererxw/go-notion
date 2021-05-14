@@ -10,33 +10,33 @@ const (
 
 type RichText struct {
 	// The plain text without annotations.
-	PlainText string
+	PlainText string `json:"plain_text,omitempty"`
 	// The URL of any link or internal Notion mention in this text, if any.
-	Href string
+	Href string `json:"href,omitempty"`
 	// All annotations that apply to this rich text.
 	// Annotations include colors and bold/italics/underline/strikethrough.
-	Annotations Annotation
+	Annotations Annotation `json:"annotations"`
 	// Type of this rich text object.
-	Type     RichTextType
-	Text     *Text
-	Mention  *Mention
-	Equation *Equation
+	Type     RichTextType `json:"type,omitempty"`
+	Text     *Text        `json:"text,omitempty"`
+	Mention  *Mention     `json:"mention,omitempty"`
+	Equation *Equation    `json:"equation,omitempty"`
 }
 
 // Annotation is style information which applies to the whole rich text object.
 type Annotation struct {
 	// Whether the text is bolded.
-	Bold bool
+	Bold bool `json:"bold,omitempty"`
 	// Whether the text is italicized.
-	Italic bool
+	Italic bool `json:"italic,omitempty"`
 	// Whether the text is struck through.
-	Strikethrough bool
+	Strikethrough bool `json:"strikethrough,omitempty"`
 	// Whether the text is underlined.
-	Underline bool
+	Underline bool `json:"underline,omitempty"`
 	// Whether the text is code style.
-	Code bool
+	Code bool `json:"code,omitempty"`
 	// Color of the text.
-	Color Color
+	Color Color `json:"color,omitempty"`
 }
 
 type Color string
@@ -65,15 +65,15 @@ const (
 
 type Text struct {
 	// Text content. This field contains the actual content of your text and is probably the field you'll use most often.
-	Content string
+	Content string `json:"content,omitempty"`
 	// Any inline link in this text.
-	Link *Link
+	Link *Link `json:"link,omitempty"`
 }
 
 // Link objects contain a type key whose value is always "url" and a url key whose value is a web address.
 type Link struct {
-	URL  string
-	Type string
+	URL  string `json:"url,omitempty"`
+	Type string `json:"type,omitempty"`
 }
 
 type MentionType string

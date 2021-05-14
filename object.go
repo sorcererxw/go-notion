@@ -70,14 +70,19 @@ func (o *Object) value() (interface{}, bool) {
 	}
 	switch o.Type {
 	case ObjectList:
+		o.list = new(List)
 		return o.list, true
 	case ObjectDatabase:
+		o.database = new(Database)
 		return o.database, true
 	case ObjectBlock:
+		o.block = new(Block)
 		return o.block, true
 	case ObjectPage:
+		o.page = new(Page)
 		return o.page, true
 	case ObjectUser:
+		o.user = new(User)
 		return o.user, true
 	}
 	return nil, false

@@ -3,58 +3,59 @@ package notion
 import "time"
 
 type Database struct {
-	Object         Object                       `json:"object,omitempty"`
-	ID             string                       `json:"id,omitempty"`
-	CreatedTime    time.Time                    `json:"created_time,omitempty"`
-	LastEditedTime time.Time                    `json:"last_edited_time,omitempty"`
-	Title          []*RichText                  `json:"title,omitempty"`
-	Properties     map[string]*DatabaseProperty `json:"properties,omitempty"`
+	Object         ObjectType          `json:"object,omitempty"`
+	ID             string              `json:"id,omitempty"`
+	CreatedTime    time.Time           `json:"created_time,omitempty"`
+	LastEditedTime time.Time           `json:"last_edited_time,omitempty"`
+	Title          []*RichText         `json:"title,omitempty"`
+	Properties     map[string]Property `json:"properties,omitempty"`
 }
 
-type DatabasePropertyType string
+type PropertyType string
 
 const (
-	DatabasePropertyTitle          DatabasePropertyType = "title"
-	DatabasePropertyRichText       DatabasePropertyType = "rich_text"
-	DatabasePropertyNumber         DatabasePropertyType = "number"
-	DatabasePropertySelect         DatabasePropertyType = "select"
-	DatabasePropertyMultiSelect    DatabasePropertyType = "multi_select"
-	DatabasePropertyDate           DatabasePropertyType = "date"
-	DatabasePropertyPeople         DatabasePropertyType = "people"
-	DatabasePropertyFile           DatabasePropertyType = "file"
-	DatabasePropertyCheckbox       DatabasePropertyType = "checkbox"
-	DatabasePropertyUrl            DatabasePropertyType = "url"
-	DatabasePropertyEmail          DatabasePropertyType = "email"
-	DatabasePropertyPhoneNumber    DatabasePropertyType = "phone_number"
-	DatabasePropertyFormula        DatabasePropertyType = "formula"
-	DatabasePropertyRelation       DatabasePropertyType = "relation"
-	DatabasePropertyRollup         DatabasePropertyType = "rollup"
-	DatabasePropertyCreatedTime    DatabasePropertyType = "created_time"
-	DatabasePropertyCreatedBy      DatabasePropertyType = "created_by"
-	DatabasePropertyLastEditedTime DatabasePropertyType = "last_edited_time"
-	DatabasePropertyLastEditedBy   DatabasePropertyType = "last_edited_by"
+	PropertyTitle          PropertyType = "title"
+	PropertyRichText       PropertyType = "rich_text"
+	PropertyNumber         PropertyType = "number"
+	PropertySelect         PropertyType = "select"
+	PropertyMultiSelect    PropertyType = "multi_select"
+	PropertyDate           PropertyType = "date"
+	PropertyPeople         PropertyType = "people"
+	PropertyFile           PropertyType = "file"
+	PropertyCheckbox       PropertyType = "checkbox"
+	PropertyUrl            PropertyType = "url"
+	PropertyEmail          PropertyType = "email"
+	PropertyPhoneNumber    PropertyType = "phone_number"
+	PropertyFormula        PropertyType = "formula"
+	PropertyRelation       PropertyType = "relation"
+	PropertyRollup         PropertyType = "rollup"
+	PropertyCreatedTime    PropertyType = "created_time"
+	PropertyCreatedBy      PropertyType = "created_by"
+	PropertyLastEditedTime PropertyType = "last_edited_time"
+	PropertyLastEditedBy   PropertyType = "last_edited_by"
 )
 
-type DatabaseProperty struct {
-	ID             string               `json:"id,omitempty"`
-	Type           DatabasePropertyType `json:"type,omitempty"`
-	Title          *struct{}            `json:"title,omitempty"`
-	Text           *struct{}            `json:"text,omitempty"`
-	Number         *Number              `json:"number,omitempty"`
-	Select         *Select              `json:"select,omitempty"`
-	MultiSelect    *MultiSelect         `json:"multi_select,omitempty"`
-	Checkbox       *struct{}            `json:"checkbox,omitempty"`
-	Email          *struct{}            `json:"email,omitempty"`
-	PhoneNumber    *struct{}            `json:"phone_number,omitempty"`
-	Formula        *Formula             `json:"formula,omitempty"`
-	Relation       *Relation            `json:"relation,omitempty"`
-	Rollup         *Rollup              `json:"rollup,omitempty"`
-	People         *struct{}            `json:"people,omitempty"`
-	Files          *struct{}            `json:"files,omitempty"`
-	CreatedTime    *struct{}            `json:"created_time,omitempty"`
-	CreatedBy      *struct{}            `json:"created_by,omitempty"`
-	LastEditedTime *struct{}            `json:"last_edited_time,omitempty"`
-	LastEditedBy   *struct{}            `json:"last_edited_by,omitempty"`
+type Property struct {
+	ID             string       `json:"id,omitempty"`
+	Type           PropertyType `json:"type,omitempty"`
+	Title          []*RichText  `json:"title,omitempty"`
+	RichText       []*RichText  `json:"rich_text,omitempty"`
+	Number         *Number      `json:"number,omitempty"`
+	Select         *Select      `json:"select,omitempty"`
+	MultiSelect    *MultiSelect `json:"multi_select,omitempty"`
+	Checkbox       bool         `json:"checkbox,omitempty"`
+	URL            string       `json:"url,omitempty"`
+	Email          string       `json:"email,omitempty"`
+	PhoneNumber    string       `json:"phone_number,omitempty"`
+	Formula        *Formula     `json:"formula,omitempty"`
+	Relation       []*Relation  `json:"relation,omitempty"`
+	Rollup         *Rollup      `json:"rollup,omitempty"`
+	People         []*struct{}  `json:"people,omitempty"`
+	Files          []*struct{}  `json:"files,omitempty"`
+	CreatedTime    *time.Time   `json:"created_time,omitempty"`
+	CreatedBy      *User        `json:"created_by,omitempty"`
+	LastEditedTime *time.Time   `json:"last_edited_time,omitempty"`
+	LastEditedBy   *User        `json:"last_edited_by,omitempty"`
 }
 
 type NumberFormat string
