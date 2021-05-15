@@ -28,6 +28,23 @@ type Parent struct {
 	Workspace  bool       `json:"workspace,omitempty"`
 }
 
+type FormulaValueType string
+
+const (
+	FormulaValueString = "string"
+	FormulaValueNumber = "number"
+	FormulaValueBoolen = "boolean"
+	FormulaValueDate   = "date"
+)
+
+type RollupValueType string
+
+const (
+	RollupValueString = "string"
+	RolluoValueDate   = "date"
+	RolluoValueArray  = "array"
+)
+
 type PageProperty struct {
 	ID          string          `json:"id,omitempty"`
 	Type        PropertyType    `json:"type,omitempty"`
@@ -38,16 +55,16 @@ type PageProperty struct {
 	MultiSelect []*SelectOption `json:"multi_select,omitempty"`
 	Date        *Date           `json:"date,omitempty"`
 	Formula     *struct {
-		Type    string  `json:"type,omitempty"`
-		String  string  `json:"string,omitempty"`
-		Number  float64 `json:"number,omitempty"`
-		Boolean bool    `json:"boolean,omitempty"`
-		Date    *Date   `json:"date,omitempty"`
+		Type    FormulaValueType `json:"type,omitempty"`
+		String  string           `json:"string,omitempty"`
+		Number  float64          `json:"number,omitempty"`
+		Boolean bool             `json:"boolean,omitempty"`
+		Date    *Date            `json:"date,omitempty"`
 	} `json:"formula,omitempty"`
 	// Relation is an array of page references.
 	Relation []*ObjectReference `json:"relation,omitempty"`
 	Rollup   *struct {
-		Type   string             `json:"type,omitempty"`
+		Type   RollupValueType    `json:"type,omitempty"`
 		Number float64            `json:"number,omitempty"`
 		Date   *Date              `json:"date,omitempty"`
 		Array  []*ObjectReference `json:"array,omitempty"`
