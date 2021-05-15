@@ -62,11 +62,11 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	return &page, nil
 }
 
-func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*Property, children ...*Block) (*Page, error) {
+func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*DatabaseProperty, children ...*Block) (*Page, error) {
 	body := struct {
-		Parent     Parent               `json:"parent,omitempty"`
-		Properties map[string]*Property `json:"properties"`
-		Children   []*Block             `json:"children,omitempty"`
+		Parent     Parent                       `json:"parent,omitempty"`
+		Properties map[string]*DatabaseProperty `json:"properties"`
+		Children   []*Block                     `json:"children,omitempty"`
 	}{
 		Parent:     parent,
 		Properties: properties,
@@ -79,9 +79,9 @@ func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[s
 	return &page, nil
 }
 
-func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*Property) (*Page, error) {
+func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*DatabaseProperty) (*Page, error) {
 	body := struct {
-		Properties map[string]*Property `json:"properties,omitempty"`
+		Properties map[string]*DatabaseProperty `json:"properties,omitempty"`
 	}{
 		Properties: properties,
 	}

@@ -115,7 +115,9 @@ func (o *Object) UnmarshalJSON(bytes []byte) error {
 	return json.Unmarshal(bytes, v)
 }
 
-// ObjectReference is simple type of Object that just contains id.
+// ObjectReference is simple type of Object that just contains id and type.
 type ObjectReference struct {
-	ID string `json:"id,omitempty"`
+	// Object may be empty in some cases.
+	Object ObjectType `json:"object,omitempty"`
+	ID     string     `json:"id,omitempty"`
 }

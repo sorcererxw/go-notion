@@ -3,12 +3,12 @@ package notion
 import "time"
 
 type Database struct {
-	Object         ObjectType          `json:"object,omitempty"`
-	ID             string              `json:"id,omitempty"`
-	CreatedTime    time.Time           `json:"created_time,omitempty"`
-	LastEditedTime time.Time           `json:"last_edited_time,omitempty"`
-	Title          []*RichText         `json:"title,omitempty"`
-	Properties     map[string]Property `json:"properties,omitempty"`
+	Object         ObjectType                  `json:"object,omitempty"`
+	ID             string                      `json:"id,omitempty"`
+	CreatedTime    time.Time                   `json:"created_time,omitempty"`
+	LastEditedTime time.Time                   `json:"last_edited_time,omitempty"`
+	Title          []*RichText                 `json:"title,omitempty"`
+	Properties     map[string]DatabaseProperty `json:"properties,omitempty"`
 }
 
 type PropertyType string
@@ -35,29 +35,6 @@ const (
 	PropertyLastEditedBy   PropertyType = "last_edited_by"
 )
 
-type Property struct {
-	ID             string       `json:"id,omitempty"`
-	Type           PropertyType `json:"type,omitempty"`
-	Title          []*RichText  `json:"title,omitempty"`
-	RichText       []*RichText  `json:"rich_text,omitempty"`
-	Number         *Number      `json:"number,omitempty"`
-	Select         *Select      `json:"select,omitempty"`
-	MultiSelect    *MultiSelect `json:"multi_select,omitempty"`
-	Checkbox       bool         `json:"checkbox,omitempty"`
-	URL            string       `json:"url,omitempty"`
-	Email          string       `json:"email,omitempty"`
-	PhoneNumber    string       `json:"phone_number,omitempty"`
-	Formula        *Formula     `json:"formula,omitempty"`
-	Relation       []*Relation  `json:"relation,omitempty"`
-	Rollup         *Rollup      `json:"rollup,omitempty"`
-	People         []*struct{}  `json:"people,omitempty"`
-	Files          []*struct{}  `json:"files,omitempty"`
-	CreatedTime    *time.Time   `json:"created_time,omitempty"`
-	CreatedBy      *User        `json:"created_by,omitempty"`
-	LastEditedTime *time.Time   `json:"last_edited_time,omitempty"`
-	LastEditedBy   *User        `json:"last_edited_by,omitempty"`
-}
-
 type NumberFormat string
 
 const (
@@ -74,44 +51,51 @@ const (
 	NumberFormatYuan             NumberFormat = "yuan"
 )
 
-type Number struct {
-	Format NumberFormat `json:"format,omitempty"`
-}
-
-type Select struct {
-	Options []*SelectOption `json:"options,omitempty"`
+// DatabaseProperty is mix type of database property.
+type DatabaseProperty struct {
+	ID       string       `json:"id,omitempty"`
+	Type     PropertyType `json:"type,omitempty"`
+	Title    *struct{}    `json:"title,omitempty"`
+	RichText *struct{}    `json:"rich_text,omitempty"`
+	Number   *struct {
+		Format NumberFormat `json:"format,omitempty"`
+	} `json:"number,omitempty"`
+	Select *struct {
+		Options []*SelectOption `json:"options,omitempty"`
+	} `json:"select,omitempty"`
+	MultiSelect *struct {
+		Options []*SelectOption `json:"options,omitempty"`
+	} `json:"multi_select,omitempty"`
+	Checkbox    *struct{} `json:"checkbox,omitempty"`
+	URL         *struct{} `json:"url,omitempty"`
+	Email       *struct{} `json:"email,omitempty"`
+	PhoneNumber *struct{} `json:"phone_number,omitempty"`
+	Formula     *struct {
+		Expression string `json:"expression,omitempty"`
+	} `json:"formula,omitempty"`
+	Relation *struct {
+		DatabaseID         string `json:"database_id,omitempty"`
+		SyncedPropertyName string `json:"synced_property_name,omitempty"`
+		SyncedPropertyID   string `json:"synced_property_id,omitempty"`
+	} `json:"relation,omitempty"`
+	Rollup *struct {
+		RelationPropertyName string `json:"relation_property_name,omitempty"`
+		RelationPropertyID   string `json:"relation_property_id,omitempty"`
+		RollupPropertyName   string `json:"rollup_property_name,omitempty"`
+		RollupPropertyID     string `json:"rollup_property_id,omitempty"`
+		Function             string `json:"function,omitempty"`
+	} `json:"rollup,omitempty"`
+	People         *struct{} `json:"people,omitempty"`
+	Date           *struct{} `json:"date,omitempty"`
+	File           *struct{} `json:"files,omitempty"`
+	CreatedTime    *struct{} `json:"created_time,omitempty"`
+	CreatedBy      *struct{} `json:"created_by,omitempty"`
+	LastEditedTime *struct{} `json:"last_edited_time,omitempty"`
+	LastEditedBy   *struct{} `json:"last_edited_by,omitempty"`
 }
 
 type SelectOption struct {
 	Name  string `json:"name,omitempty"`
 	ID    string `json:"id,omitempty"`
 	Color Color  `json:"color,omitempty"`
-}
-
-type MultiSelect struct {
-	Options []*MultiSelectOption `json:"options,omitempty"`
-}
-
-type MultiSelectOption struct {
-	Name  string `json:"name,omitempty"`
-	ID    string `json:"id,omitempty"`
-	Color Color  `json:"color,omitempty"`
-}
-
-type Rollup struct {
-	RelationPropertyName string `json:"relation_property_name,omitempty"`
-	RelationPropertyID   string `json:"relation_property_id,omitempty"`
-	RollupPropertyName   string `json:"rollup_property_name,omitempty"`
-	RollupPropertyID     string `json:"rollup_property_id,omitempty"`
-	Function             string `json:"function,omitempty"`
-}
-
-type Relation struct {
-	DatabaseID         string `json:"database_id,omitempty"`
-	SyncedPropertyName string `json:"synced_property_name,omitempty"`
-	SyncedPropertyID   string `json:"synced_property_id,omitempty"`
-}
-
-type Formula struct {
-	Expression string `json:"expression,omitempty"`
 }
