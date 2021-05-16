@@ -2,10 +2,10 @@
 
 [![tests](https://github.com/sorcererxw/go-notion/actions/workflows/tests.yaml/badge.svg)](https://github.com/sorcererxw/go-notion/actions/workflows/tests.yaml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sorcererxw/go-notion.svg)](https://pkg.go.dev/github.com/sorcererxw/go-notion)
-[![Go Report Card](https://goreportcard.com/badge/github.com/sorcererxw/go-notion)](https://goreportcard.com/badge/github.com/sorcererxw/go-notion)
+[![Go Report Card](https://goreportcard.com/report/github.com/sorcererxw/go-notion)](https://goreportcard.com/badge/github.com/sorcererxw/go-notion)
 [![codecov](https://codecov.io/gh/sorcererxw/go-notion/branch/master/graph/badge.svg?token=BUSFRL18RV)](https://codecov.io/gh/sorcererxw/go-notion)
 
-> 🚧 Working In Progrsss
+> 🚧 Working In Progress
 
 Go SDK for Notion Official API.
 
@@ -18,6 +18,7 @@ go get github.com/sorcererxw/go-notion
     - [Pagination](#pagination)
     - [Error Handling](#error-handling)
     - [Reverse Proxy](#reverse-proxy)
+    - [OAuth](#oauth)
 * [License](#license)
 
 ## Overview
@@ -124,6 +125,28 @@ func main() {
   client := notion.NewClient(notion.Settings{
       Token: "token",
       Endpoint: proxyEndpoint,
+  })
+}
+```
+
+### OAuth
+
+```go
+package main
+
+import "net/http"
+
+func main() {
+  client := notion.NewOAuthClient("client_id", "client_secret", "redirect_uri")
+
+  mux := http.NewServeMux()
+  mux.HandleFunc("/oauth", func(w http.ResponseWriter, r *http.Request) {
+    code := r.URL.Query().Get("code")
+    token, _ := client.ExchangeAccessToken(r.Context(), code)
+    
+    // store token to db ...
+    
+    w.WriteHeader(http.StatusOK)
   })
 }
 ```

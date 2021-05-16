@@ -7,10 +7,10 @@ import (
 type ErrCode string
 
 const (
-	// ErrCodeInvalidJson The request body could not be decoded as JSON.
-	ErrCodeInvalidJson ErrCode = "invalid_json"
-	// ErrCodeInvalidRequestUrl The request URL is not valid.
-	ErrCodeInvalidRequestUrl ErrCode = "invalid_request_url"
+	// ErrCodeInvalidJSON The request body could not be decoded as JSON.
+	ErrCodeInvalidJSON ErrCode = "invalid_json"
+	// ErrCodeInvalidRequestURL The request URL is not valid.
+	ErrCodeInvalidRequestURL ErrCode = "invalid_request_url"
 	// ErrCodeInvalidRequest This request is not supported.
 	ErrCodeInvalidRequest ErrCode = "invalid_request"
 	// ErrCodeValidationError The request body does not match the schema for the expected parameters.

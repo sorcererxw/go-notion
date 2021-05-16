@@ -23,7 +23,7 @@ const (
 	PropertyPeople         PropertyType = "people"
 	PropertyFile           PropertyType = "file"
 	PropertyCheckbox       PropertyType = "checkbox"
-	PropertyUrl            PropertyType = "url"
+	PropertyURL            PropertyType = "url"
 	PropertyEmail          PropertyType = "email"
 	PropertyPhoneNumber    PropertyType = "phone_number"
 	PropertyFormula        PropertyType = "formula"

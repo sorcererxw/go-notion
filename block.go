@@ -2,6 +2,7 @@ package notion
 
 import "time"
 
+// BlockType is type of Block.
 type BlockType string
 
 const (
@@ -19,21 +20,21 @@ const (
 
 // Block object represents content within Notion.
 type Block struct {
-	Object           ObjectType        `json:"object,omitempty"`
-	ID               string            `json:"id,omitempty"`
-	CreatedTime      time.Time         `json:"created_time,omitempty"`
-	LastEditedTime   time.Time         `json:"last_edited_time,omitempty"`
-	HasChildren      bool              `json:"has_children,omitempty"`
-	Type             BlockType         `json:"type,omitempty"`
-	Heading1         *Heading1         `json:"heading1,omitempty"`
-	Heading2         *Heading2         `json:"heading2,omitempty"`
-	Heading3         *Heading3         `json:"heading3,omitempty"`
-	Paragraph        *Paragraph        `json:"paragraph,omitempty"`
-	BulletedListItem *BulletedListItem `json:"bulleted_list_item,omitempty"`
-	NumberedListItem *NumberedListItem `json:"numbered_list_item,omitempty"`
-	ToDo             *Todo             `json:"to_do,omitempty"`
-	Toggle           *Toggle           `json:"toggle,omitempty"`
-	ChildPage        *ChildPage        `json:"child_page,omitempty"`
+	Object           ObjectType `json:"object,omitempty"`
+	ID               string     `json:"id,omitempty"`
+	CreatedTime      time.Time  `json:"created_time,omitempty"`
+	LastEditedTime   time.Time  `json:"last_edited_time,omitempty"`
+	HasChildren      bool       `json:"has_children,omitempty"`
+	Type             BlockType  `json:"type,omitempty"`
+	Heading1         *Heading   `json:"heading1,omitempty"`
+	Heading2         *Heading   `json:"heading2,omitempty"`
+	Heading3         *Heading   `json:"heading3,omitempty"`
+	Paragraph        *Paragraph `json:"paragraph,omitempty"`
+	BulletedListItem *ListItem  `json:"bulleted_list_item,omitempty"`
+	NumberedListItem *ListItem  `json:"numbered_list_item,omitempty"`
+	ToDo             *Todo      `json:"to_do,omitempty"`
+	Toggle           *Toggle    `json:"toggle,omitempty"`
+	ChildPage        *ChildPage `json:"child_page,omitempty"`
 }
 
 type Paragraph struct {
@@ -41,21 +42,16 @@ type Paragraph struct {
 	Children []*Block    `json:"children,omitempty"`
 }
 
+// Heading is the common type of Heading1, Heading2, Heading3
 type Heading struct {
 	Text []*RichText `json:"text,omitempty"`
 }
 
-type Heading1 = Heading
-type Heading2 = Heading
-type Heading3 = Heading
-
+// ListItem is the common type of BulletedListItem and NumberedListItem.
 type ListItem struct {
 	Text     []*RichText `json:"text,omitempty"`
 	Children []*Block    `json:"children,omitempty"`
 }
-
-type BulletedListItem = ListItem
-type NumberedListItem = ListItem
 
 type Todo struct {
 	Text     []*RichText `json:"text,omitempty"`

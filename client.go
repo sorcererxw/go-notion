@@ -156,7 +156,7 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 	}
 
 	req.Header.Add("Authorization", "Bearer "+c.token)
-	req.Header.Add("Notion-Version", apiVersion)
+	req.Header.Add("Notion-Version", APIVersion)
 	req.Header.Add("Content-Type", "application/json")
 
 	for _, fn := range fns {

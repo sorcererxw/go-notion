@@ -63,6 +63,7 @@ const (
 	ColorRedBackground    Color = "red_background"
 )
 
+// Text is the content of rich text.
 type Text struct {
 	// Text content. This field contains the actual content of your text and is probably the field you'll use most often.
 	Content string `json:"content,omitempty"`
@@ -76,6 +77,7 @@ type Link struct {
 	Type string `json:"type,omitempty"`
 }
 
+// MentionType is type of Mention.
 type MentionType string
 
 const (

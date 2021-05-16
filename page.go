@@ -13,6 +13,7 @@ type Page struct {
 	Parent         Parent                  `json:"parent,omitempty"`
 }
 
+// ParentType is type of Parent.
 type ParentType string
 
 const (
@@ -21,6 +22,7 @@ const (
 	ParentWorkspace ParentType = "workspace"
 )
 
+// Parent represents the Page parent.
 type Parent struct {
 	Type       ParentType `json:"type,omitempty"`
 	PageID     string     `json:"page_id,omitempty"`
@@ -28,22 +30,49 @@ type Parent struct {
 	Workspace  bool       `json:"workspace,omitempty"`
 }
 
+func NewDatabaseParent(databaseID string) *Parent {
+	return &Parent{Type: ParentDatabase, DatabaseID: databaseID}
+}
+
+func NewPageParent(pageID string) *Parent {
+	return &Parent{Type: ParentDatabase, PageID: pageID}
+}
+
+func NewWorkspaceParent() *Parent {
+	return &Parent{Type: ParentDatabase, Workspace: true}
+}
+
 type FormulaValueType string
 
 const (
-	FormulaValueString = "string"
-	FormulaValueNumber = "number"
-	FormulaValueBoolen = "boolean"
-	FormulaValueDate   = "date"
+	FormulaValueString FormulaValueType = "string"
+	FormulaValueNumber FormulaValueType = "number"
+	FormulaValueBoolen FormulaValueType = "boolean"
+	FormulaValueDate   FormulaValueType = "date"
 )
+
+type FormulaValue struct {
+	Type    FormulaValueType `json:"type,omitempty"`
+	String  string           `json:"string,omitempty"`
+	Number  float64          `json:"number,omitempty"`
+	Boolean bool             `json:"boolean,omitempty"`
+	Date    *Date            `json:"date,omitempty"`
+}
 
 type RollupValueType string
 
 const (
-	RollupValueString = "string"
-	RolluoValueDate   = "date"
-	RolluoValueArray  = "array"
+	RollupValueString RollupValueType = "string"
+	RolluoValueDate   RollupValueType = "date"
+	RolluoValueArray  RollupValueType = "array"
 )
+
+type RollupValue struct {
+	Type   RollupValueType    `json:"type,omitempty"`
+	Number float64            `json:"number,omitempty"`
+	Date   *Date              `json:"date,omitempty"`
+	Array  []*ObjectReference `json:"array,omitempty"`
+}
 
 type PageProperty struct {
 	ID          string          `json:"id,omitempty"`
@@ -54,33 +83,24 @@ type PageProperty struct {
 	Select      *SelectOption   `json:"select,omitempty"`
 	MultiSelect []*SelectOption `json:"multi_select,omitempty"`
 	Date        *Date           `json:"date,omitempty"`
-	Formula     *struct {
-		Type    FormulaValueType `json:"type,omitempty"`
-		String  string           `json:"string,omitempty"`
-		Number  float64          `json:"number,omitempty"`
-		Boolean bool             `json:"boolean,omitempty"`
-		Date    *Date            `json:"date,omitempty"`
-	} `json:"formula,omitempty"`
+	Formula     *FormulaValue   `json:"formula,omitempty"`
 	// Relation is an array of page references.
-	Relation []*ObjectReference `json:"relation,omitempty"`
-	Rollup   *struct {
-		Type   RollupValueType    `json:"type,omitempty"`
-		Number float64            `json:"number,omitempty"`
-		Date   *Date              `json:"date,omitempty"`
-		Array  []*ObjectReference `json:"array,omitempty"`
-	} `json:"rollup,omitempty"`
-	People []*User `json:"people,omitempty"`
-	Files  []*struct {
-		Name string `json:"name,omitempty"`
-	} `json:"files,omitempty"`
-	Checkbox       bool       `json:"checkbox,omitempty"`
-	URL            string     `json:"url,omitempty"`
-	Email          string     `json:"email,omitempty"`
-	Phone          string     `json:"phone,omitempty"`
-	CreatedBy      *User      `json:"created_by,omitempty"`
-	LastEditedBy   *User      `json:"last_edited_by,omitempty"`
-	CreatedTime    *time.Time `json:"created_time,omitempty"`
-	LastEditedTime *time.Time `json:"last_edited_time,omitempty"`
+	Relation       []*ObjectReference `json:"relation,omitempty"`
+	Rollup         *RollupValue       `json:"rollup,omitempty"`
+	People         []*User            `json:"people,omitempty"`
+	Files          []*File            `json:"files,omitempty"`
+	Checkbox       bool               `json:"checkbox,omitempty"`
+	URL            string             `json:"url,omitempty"`
+	Email          string             `json:"email,omitempty"`
+	Phone          string             `json:"phone,omitempty"`
+	CreatedBy      *User              `json:"created_by,omitempty"`
+	LastEditedBy   *User              `json:"last_edited_by,omitempty"`
+	CreatedTime    *time.Time         `json:"created_time,omitempty"`
+	LastEditedTime *time.Time         `json:"last_edited_time,omitempty"`
+}
+
+type File struct {
+	Name string `json:"name,omitempty"`
 }
 
 type Date struct {

@@ -5,8 +5,9 @@ import (
 	"time"
 )
 
-const apiVersion = "2021-05-13"
+const APIVersion = "2021-05-13"
 
+// API is declaration of Notion.so APIs.
 type API interface {
 	// RetrieveDatabase retrieves a database.
 	RetrieveDatabase(ctx context.Context, databaseID string) (*Database, error)
@@ -32,6 +33,7 @@ type API interface {
 	Search(ctx context.Context, param SearchParam) (results []*Object, nextCursor string, hasMore bool, err error)
 }
 
+// SortDirection query result order.
 type SortDirection string
 
 const (
