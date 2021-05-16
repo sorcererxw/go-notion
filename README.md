@@ -17,15 +17,21 @@ go get github.com/sorcererxw/go-notion
 * [Getting Started](#getting-started)
     - [Pagination](#pagination)
     - [Error Handling](#error-handling)
+    - [Reverse Proxy](#reverse-proxy)
 * [License](#license)
 
 ## Overview
 
 go-notion is the Golang binding
 for [Notion official API](https://developers.notion.com/).
-This package provides easy-to-use API and defines most
-entity types. You can easily and quickly build notion
-integrations with this package.
+This package provides:
+
+- Easy-to-use and well-testing API wrappers.
+
+- Complete type definition.
+
+You can easily and quickly build notion integrations with
+this package.
 
 ⚠️ Notion official API is still in public beta, it's hard to
 guarantee forward compatibility in the future. This package
@@ -74,24 +80,25 @@ func main() {
 }
 ```
 
-## Error Handling
+### Error Handling
 
-go-notion declare [all error codes](https://developers.notion.com/reference/errors). You can compare error
-code to confirm which error occurred.
+go-notion
+declares [error codes](https://developers.notion.com/reference/errors)
+. You can compare error code to confirm which error
+occurred.
 
 ```go
 package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/sorcererxw/go-notion"
 )
 
 func main() {
-	user, err := client.RetrieveUser(context.Background(), "userId")
+	user, err := client.RetrieveUser(context.Background(), "user_id")
 	if err, ok := notion.AsError(err); ok {
 		switch err.Code {
 		case notion.ErrCodeRateLimited:
@@ -101,6 +108,26 @@ func main() {
 }
 ```
 
+### Reverse Proxy
+
+If you cannot access Notion server in your region(e.g. China)
+directly, you can use reverse proxy to solve the problem:
+
+```go
+package main
+
+import "github.com/sorcererxw/go-notion"
+
+const proxyEndpoint = "https://1.1.1.1/notion"
+
+func main() {
+  client := notion.NewClient(notion.Settings{
+      Token: "token",
+      Endpoint: proxyEndpoint,
+  })
+}
+```
+
 ## License
 
-go-notion is distributed under MIT.
+go-notion is distributed under [MIT](./LICENSE).

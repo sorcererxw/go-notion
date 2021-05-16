@@ -4,30 +4,36 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
-	"net/http/httputil"
+	pathpkg "path"
 	"strconv"
 	"time"
 )
 
 type Client struct {
 	token      string
+	endpoint   string
 	httpclient *http.Client
 }
 
 type Settings struct {
-	Token string
+	Token      string
+	Endpoint   string
+	HTTPClient *http.Client
 }
 
 func NewClient(settings Settings) API {
-	return &Client{
-		token: settings.Token,
-		httpclient: &http.Client{
-			Timeout: 10 * time.Second,
-		},
+	c := &Client{token: settings.Token}
+	if c.endpoint == "" {
+		c.endpoint = "https://api.notion.so"
 	}
+	if c.httpclient == nil {
+		c.httpclient = &http.Client{
+			Timeout: 10 * time.Second,
+		}
+	}
+	return c
 }
 
 func (c *Client) RetrieveDatabase(ctx context.Context, databaseID string) (*Database, error) {
@@ -129,7 +135,7 @@ func (c *Client) ListAllUsers(ctx context.Context, pageSize int32, startCursor s
 
 func (c *Client) Search(ctx context.Context, param SearchParam) ([]*Object, string, bool, error) {
 	var result List
-	if err := c.request(ctx, http.MethodGet, "/v1/search", param, &result); err != nil {
+	if err := c.request(ctx, http.MethodPost, "/v1/search", param, &result); err != nil {
 		return nil, "", false, err
 	}
 	return result.Results, result.NextCursor, result.HasMore, nil
@@ -144,7 +150,7 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		}
 		body = bytes.NewBuffer(b)
 	}
-	req, err := http.NewRequestWithContext(ctx, method, endpoint+path, body)
+	req, err := http.NewRequestWithContext(ctx, method, pathpkg.Join(c.endpoint, path), body)
 	if err != nil {
 		return err
 	}
@@ -156,9 +162,6 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 	for _, fn := range fns {
 		fn(req)
 	}
-
-	dump, _ := httputil.DumpRequestOut(req, true)
-	fmt.Println(string(dump))
 
 	rsp, err := c.httpclient.Do(req)
 	if err != nil {
