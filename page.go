@@ -82,3 +82,9 @@ type PageProperty struct {
 	CreatedTime    *time.Time `json:"created_time,omitempty"`
 	LastEditedTime *time.Time `json:"last_edited_time,omitempty"`
 }
+
+type Date struct {
+	Start time.Time
+	// If null, this property's date value is not a range.
+	End *time.Time
+}

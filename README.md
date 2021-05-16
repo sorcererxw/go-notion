@@ -15,6 +15,8 @@ go get github.com/sorcererxw/go-notion
 
 * [Overview](#overview)
 * [Getting Started](#getting-started)
+    - [Pagination](#pagination)
+    - [Error Handling](#error-handling)
 * [License](#license)
 
 ## Overview
@@ -55,16 +57,47 @@ func main() {
 ### Pagination
 
 ```go
-var cursor string
-for {
-    data, nextCursor, hasMore, err := client.ListAllUsers(context.Background(), 30, cursor)
-    if err!=nil {
-    	break
-    }
-    if !hasMore {
-        break	
-    }   
-    cursor = nextCursor
+package main
+
+func main() {
+	var cursor string
+	for {
+		data, nextCursor, hasMore, err := client.ListAllUsers(context.Background(), 30, cursor)
+		if err != nil {
+			break
+		}
+		if !hasMore {
+			break
+		}
+		cursor = nextCursor
+	}
+}
+```
+
+## Error Handling
+
+go-notion declare [all error codes](https://developers.notion.com/reference/errors). You can compare error
+code to confirm which error occurred.
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"github.com/sorcererxw/go-notion"
+)
+
+func main() {
+	user, err := client.RetrieveUser(context.Background(), "userId")
+	if err, ok := notion.AsError(err); ok {
+		switch err.Code {
+		case notion.ErrCodeRateLimited:
+			fmt.Println("rate limited")
+		}
+	}
 }
 ```
 
