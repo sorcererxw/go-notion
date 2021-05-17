@@ -4,16 +4,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
-	pathpkg "path"
+	"net/http/httputil"
 	"strconv"
-	"time"
+	"strings"
 )
 
 type Client struct {
 	token      string
 	endpoint   string
+	debug      bool
 	httpclient *http.Client
 }
 
@@ -24,14 +26,17 @@ type Settings struct {
 }
 
 func NewClient(settings Settings) API {
-	c := &Client{token: settings.Token}
+	c := &Client{
+		debug:      true,
+		token:      settings.Token,
+		endpoint:   strings.TrimSuffix(settings.Endpoint, "/"),
+		httpclient: settings.HTTPClient,
+	}
 	if c.endpoint == "" {
-		c.endpoint = "https://api.notion.so"
+		c.endpoint = "https://api.notion.com"
 	}
 	if c.httpclient == nil {
-		c.httpclient = &http.Client{
-			Timeout: 10 * time.Second,
-		}
+		c.httpclient = http.DefaultClient
 	}
 	return c
 }
@@ -68,11 +73,11 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	return &page, nil
 }
 
-func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*DatabaseProperty, children ...*Block) (*Page, error) {
+func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*PropertyValue, children ...*Block) (*Page, error) {
 	body := struct {
-		Parent     Parent                       `json:"parent,omitempty"`
-		Properties map[string]*DatabaseProperty `json:"properties"`
-		Children   []*Block                     `json:"children,omitempty"`
+		Parent     Parent                    `json:"parent,omitempty"`
+		Properties map[string]*PropertyValue `json:"properties"`
+		Children   []*Block                  `json:"children,omitempty"`
 	}{
 		Parent:     parent,
 		Properties: properties,
@@ -85,9 +90,9 @@ func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[s
 	return &page, nil
 }
 
-func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*DatabaseProperty) (*Page, error) {
+func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PropertyValue) (*Page, error) {
 	body := struct {
-		Properties map[string]*DatabaseProperty `json:"properties,omitempty"`
+		Properties map[string]*PropertyValue `json:"properties,omitempty"`
 	}{
 		Properties: properties,
 	}
@@ -148,9 +153,9 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		if err != nil {
 			return err
 		}
-		body = bytes.NewBuffer(b)
+		body = bytes.NewReader(b)
 	}
-	req, err := http.NewRequestWithContext(ctx, method, pathpkg.Join(c.endpoint, path), body)
+	req, err := http.NewRequestWithContext(ctx, method, c.endpoint+path, body)
 	if err != nil {
 		return err
 	}
@@ -163,14 +168,24 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		fn(req)
 	}
 
+	if c.debug {
+		b, err := httputil.DumpRequest(req, true)
+		fmt.Println(err)
+		fmt.Println(string(b))
+	}
 	rsp, err := c.httpclient.Do(req)
 	if err != nil {
+		fmt.Println(err.Error())
+
 		return err
 	}
+
+	fmt.Println(rsp.StatusCode)
 
 	defer rsp.Body.Close()
 
 	if rsp.StatusCode >= 400 {
+		fmt.Println(rsp.StatusCode)
 		var e Error
 		if err := json.NewDecoder(rsp.Body).Decode(&e); err != nil {
 			return err

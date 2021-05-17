@@ -18,9 +18,9 @@ type API interface {
 	// RetrievePage retrieves a page.
 	RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	// CreatePage creates a new page.
-	CreatePage(ctx context.Context, parent Parent, properties map[string]*DatabaseProperty, children ...*Block) (*Page, error)
+	CreatePage(ctx context.Context, parent Parent, properties map[string]*PropertyValue, children ...*Block) (*Page, error)
 	// UpdatePageProperties updates pages' properties.
-	UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*DatabaseProperty) (*Page, error)
+	UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PropertyValue) (*Page, error)
 	// RetrieveBlockChildren retrieves child blocks of block.
 	RetrieveBlockChildren(ctx context.Context, blockID string, pageSize int32, startCursor string) (results []*Block, nextCursor string, hasMore bool, err error)
 	// AppendBlockChildren creates new child blocks.
