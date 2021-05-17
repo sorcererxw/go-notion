@@ -169,23 +169,18 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 	}
 
 	if c.debug {
-		b, err := httputil.DumpRequest(req, true)
-		fmt.Println(err)
+		b, _ := httputil.DumpRequest(req, true)
 		fmt.Println(string(b))
 	}
 	rsp, err := c.httpclient.Do(req)
 	if err != nil {
-		fmt.Println(err.Error())
-
 		return err
 	}
 
-	fmt.Println(rsp.StatusCode)
 
 	defer rsp.Body.Close()
 
 	if rsp.StatusCode >= 400 {
-		fmt.Println(rsp.StatusCode)
 		var e Error
 		if err := json.NewDecoder(rsp.Body).Decode(&e); err != nil {
 			return err
