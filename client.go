@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	pathpkg "path"
 	"strconv"
 	"time"
 )
@@ -150,7 +149,9 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		}
 		body = bytes.NewBuffer(b)
 	}
-	req, err := http.NewRequestWithContext(ctx, method, pathpkg.Join(c.endpoint, path), body)
+
+	requestURL := c.endpoint + path
+	req, err := http.NewRequestWithContext(ctx, method, requestURL, body)
 	if err != nil {
 		return err
 	}
