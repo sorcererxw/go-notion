@@ -23,9 +23,13 @@ type Settings struct {
 }
 
 func NewClient(settings Settings) API {
-	c := &Client{token: settings.Token}
+	c := &Client{
+		token:      settings.Token,
+		endpoint:   settings.Endpoint,
+		httpclient: settings.HTTPClient,
+	}
 	if c.endpoint == "" {
-		c.endpoint = "https://api.notion.so"
+		c.endpoint = "https://api.notion.com"
 	}
 	if c.httpclient == nil {
 		c.httpclient = &http.Client{
