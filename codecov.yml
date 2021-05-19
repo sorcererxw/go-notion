@@ -4,3 +4,7 @@ coverage:
     project:
       default:
         threshold: 0%
+    patch:
+      default:
+        threshold: 0%
+        base: auto
