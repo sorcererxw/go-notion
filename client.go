@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -150,7 +151,7 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		body = bytes.NewBuffer(b)
 	}
 
-	requestURL := c.endpoint + path
+	requestURL := strings.TrimSuffix(c.endpoint, "/") + path
 	req, err := http.NewRequestWithContext(ctx, method, requestURL, body)
 	if err != nil {
 		return err
