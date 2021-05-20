@@ -2,6 +2,10 @@ name: tests
 
 on:
   push:
+    tags:
+      - v*
+    branches:
+      - master
   pull_request:
 
 jobs:
@@ -23,8 +27,8 @@ jobs:
 
       - name: Run Tests
         env:
-          NOTION_TOKEN: ${{ secret.NOTION_TOKEN }}
-          CONTAINER_DATABASE: ${{ secret.CONTAINNER_DATABASE }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          CONTAINER_DATABASE: ${{ secrets.CONTAINNER_DATABASE }}
         run: |
           go test -race -tags=e2e --coverprofile=coverage.coverprofile --covermode=atomic ./...
 
