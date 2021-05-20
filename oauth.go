@@ -3,7 +3,6 @@ package notion
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"net/http"
 )
@@ -48,7 +47,7 @@ func (c *OAuthClient) ExchangeAccessToken(ctx context.Context, code string) (*OA
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(c.clientID+":"+c.clientSecret)))
+	req.SetBasicAuth(c.clientID, c.clientSecret)
 	req.Header.Add("Content-Type", "application/json")
 
 	rsp, err := c.httpclient.Do(req)

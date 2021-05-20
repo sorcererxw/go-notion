@@ -1,6 +1,9 @@
 package notion
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // BlockType is type of Block.
 type BlockType string
@@ -26,9 +29,9 @@ type Block struct {
 	LastEditedTime   time.Time  `json:"last_edited_time,omitempty"`
 	HasChildren      bool       `json:"has_children,omitempty"`
 	Type             BlockType  `json:"type,omitempty"`
-	Heading1         *Heading   `json:"heading1,omitempty"`
-	Heading2         *Heading   `json:"heading2,omitempty"`
-	Heading3         *Heading   `json:"heading3,omitempty"`
+	Heading1         *Heading   `json:"heading_1,omitempty"`
+	Heading2         *Heading   `json:"heading_2,omitempty"`
+	Heading3         *Heading   `json:"heading_3,omitempty"`
 	Paragraph        *Paragraph `json:"paragraph,omitempty"`
 	BulletedListItem *ListItem  `json:"bulleted_list_item,omitempty"`
 	NumberedListItem *ListItem  `json:"numbered_list_item,omitempty"`
@@ -37,8 +40,19 @@ type Block struct {
 	ChildPage        *ChildPage `json:"child_page,omitempty"`
 }
 
+func (b *Block) MarshalJSON() ([]byte, error) {
+	if b == nil {
+		return json.Marshal(nil)
+	}
+	b.Object = ObjectBlock
+	type Alias Block
+	return json.Marshal((*Alias)(b))
+}
+
+var _ json.Marshaler = &Block{}
+
 type Paragraph struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
@@ -49,7 +63,7 @@ type Heading struct {
 
 // ListItem is the common type of BulletedListItem and NumberedListItem.
 type ListItem struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
@@ -60,7 +74,7 @@ type Todo struct {
 }
 
 type Toggle struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
