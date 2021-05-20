@@ -1,11 +1,5 @@
 package notion
 
-import (
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/text"
-)
-
 type RichTextType string
 
 const (
@@ -27,16 +21,6 @@ type RichText struct {
 	Text     *Text        `json:"text,omitempty"`
 	Mention  *Mention     `json:"mention,omitempty"`
 	Equation *Equation    `json:"equation,omitempty"`
-}
-
-func RichTextFromMarkdown(data string) ([]*RichText, error) {
-	type Node struct {
-		rt *RichText
-		md ast.Node
-	}
-
-	node := goldmark.DefaultParser().Parse(text.NewReader([]byte(data)))
-
 }
 
 // Annotation is style information which applies to the whole rich text object.
