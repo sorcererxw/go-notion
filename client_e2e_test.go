@@ -37,6 +37,12 @@ func TestClientE2E(t *testing.T) {
 	t.Run("append child to page", func(t *testing.T) {
 		err := client.AppendBlockChildren(context.Background(), page.ID,
 			&notion.Block{
+				Type: notion.BlockHeading1,
+				Heading1: &notion.Heading{
+					Text: []*notion.RichText{{Text: &notion.Text{Content: "h1"}}},
+				},
+			},
+			&notion.Block{
 				Type: notion.BlockHeading2,
 				Heading2: &notion.Heading{
 					Text: []*notion.RichText{{Text: &notion.Text{Content: "h2"}}},
@@ -58,6 +64,24 @@ func TestClientE2E(t *testing.T) {
 			&notion.Block{
 				Type: notion.BlockParagraph,
 				Paragraph: &notion.Paragraph{
+					Text: []*notion.RichText{},
+				},
+			},
+			&notion.Block{
+				Type: notion.BlockToggle,
+				Toggle: &notion.Toggle{
+					Text: []*notion.RichText{},
+				},
+			},
+			&notion.Block{
+				Type: notion.BlockBulletedListItem,
+				BulletedListItem: &notion.ListItem{
+					Text: []*notion.RichText{},
+				},
+			},
+			&notion.Block{
+				Type: notion.BlockNumberedListItem,
+				NumberedListItem: &notion.ListItem{
 					Text: []*notion.RichText{},
 				},
 			},

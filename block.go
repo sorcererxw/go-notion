@@ -63,7 +63,7 @@ type Heading struct {
 
 // ListItem is the common type of BulletedListItem and NumberedListItem.
 type ListItem struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
@@ -74,7 +74,7 @@ type Todo struct {
 }
 
 type Toggle struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
