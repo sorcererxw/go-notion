@@ -56,7 +56,7 @@ func TestClientE2E(t *testing.T) {
 			},
 			&notion.Block{
 				Type: notion.BlockToDo,
-				ToDo: &notion.Todo{
+				ToDo: &notion.ToDo{
 					Text:    []*notion.RichText{{Text: &notion.Text{Content: "todo1"}}},
 					Checked: true,
 				},

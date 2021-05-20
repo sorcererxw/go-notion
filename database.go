@@ -2,6 +2,9 @@ package notion
 
 import "time"
 
+// Database objects describe the property schema of a database in Notion.
+// Page are the items (or children) in a database.
+// Page property values must conform to the property objects laid out in the parent database object.
 type Database struct {
 	Object         ObjectType          `json:"object,omitempty"`
 	ID             string              `json:"id,omitempty"`
@@ -11,8 +14,10 @@ type Database struct {
 	Properties     map[string]Property `json:"properties,omitempty"`
 }
 
+// PropertyType is type of database Property.
 type PropertyType string
 
+// PropertyType enums.
 const (
 	PropertyTitle          PropertyType = "title"
 	PropertyRichText       PropertyType = "rich_text"
@@ -35,8 +40,10 @@ const (
 	PropertyLastEditedBy   PropertyType = "last_edited_by"
 )
 
+// NumberFormat is format of number property value.
 type NumberFormat string
 
+// NumberFormat enums.
 const (
 	NumberFormatNumber           NumberFormat = "number"
 	NumberFormatNumberWithCommas NumberFormat = "number_with_commas"
@@ -94,6 +101,7 @@ type Property struct {
 	LastEditedBy   *struct{} `json:"last_edited_by,omitempty"`
 }
 
+// SelectOption is the option value of single selector and multi selector.
 type SelectOption struct {
 	Name  string `json:"name,omitempty"`
 	ID    string `json:"id,omitempty"`

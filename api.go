@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const APIVersion = "2021-05-13"
+const apiVersion = "2021-05-13"
 
 // API is declaration of Notion.so APIs.
 type API interface {
@@ -36,16 +36,14 @@ type API interface {
 // SortDirection query result order.
 type SortDirection string
 
+// SortDirection enums.
 const (
 	DirectionAscending  SortDirection = "ascending"
 	DirectionDescending SortDirection = "descending"
 )
 
-type Sort interface {
-	direction() SortDirection
-}
-
-type sort struct {
+// Sort sorts the results based on the provided criteria.
+type Sort struct {
 	// The direction to sort.
 	Direction SortDirection `json:"direction,omitempty"`
 	// The name of the timestamp to sort against. Possible values include "created_time" and "last_edited_time".
@@ -54,21 +52,19 @@ type sort struct {
 	Property string `json:"property,omitempty"`
 }
 
-func (s *sort) direction() SortDirection { return s.Direction }
-
 // SortByCreatedTime creates Sort to sort database by "created_time".
-func SortByCreatedTime(direction SortDirection) Sort {
-	return &sort{Direction: direction, Timestamp: "created_time"}
+func SortByCreatedTime(direction SortDirection) *Sort {
+	return &Sort{Direction: direction, Timestamp: "created_time"}
 }
 
 // SortByLastEditedTime creates Sort to sort database by "last_edited_time".
-func SortByLastEditedTime(direction SortDirection) Sort {
-	return &sort{Direction: direction, Timestamp: "last_edited_time"}
+func SortByLastEditedTime(direction SortDirection) *Sort {
+	return &Sort{Direction: direction, Timestamp: "last_edited_time"}
 }
 
 // SortByProperty creates Sort to sort database by specified property.
-func SortByProperty(property string, direction SortDirection) Sort {
-	return &sort{Direction: direction, Property: property}
+func SortByProperty(property string, direction SortDirection) *Sort {
+	return &Sort{Direction: direction, Property: property}
 }
 
 // QueryDatabase related types.
@@ -76,7 +72,7 @@ type (
 	// QueryDatabaseParam is the param of QueryDatabase.
 	QueryDatabaseParam struct {
 		Filter      *Filter `json:"filter,omitempty"`
-		Sorts       []Sort  `json:"sorts,omitempty"`
+		Sorts       []*Sort `json:"sorts,omitempty"`
 		StartCursor string  `json:"start_cursor,omitempty"`
 		PageSize    int32   `json:"page_size,omitempty"`
 	}
@@ -193,7 +189,6 @@ type (
 	}
 )
 
-// Search related types.
 type (
 	// SearchParam is param of Search.
 	SearchParam struct {
@@ -211,6 +206,7 @@ type (
 		PageSize    int32         `json:"page_size,omitempty"`
 	}
 
+	// SearchFilter when supplied, filters the results based on the provided criteria.
 	SearchFilter struct {
 		// The value of the property to filter the results by.
 		// Possible values for object type include page or database.

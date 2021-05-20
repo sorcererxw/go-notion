@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 )
 
+// ObjectType is enum of Notion top level resource types.
 type ObjectType string
 
+// ObjectType enums.
 const (
 	ObjectList     ObjectType = "list"
 	ObjectDatabase ObjectType = "database"
@@ -90,6 +92,7 @@ func (o *Object) value() (interface{}, bool) {
 
 var _ json.Marshaler = &Object{}
 
+// MarshalJSON picks the value field for JSON marshalling.
 func (o *Object) MarshalJSON() ([]byte, error) {
 	v, _ := o.value()
 	return json.Marshal(v)
@@ -97,6 +100,7 @@ func (o *Object) MarshalJSON() ([]byte, error) {
 
 var _ json.Unmarshaler = &Object{}
 
+// UnmarshalJSON unmarshalls bytes to the correct Object field according to "object" type field.
 func (o *Object) UnmarshalJSON(bytes []byte) error {
 	if o == nil {
 		return nil
