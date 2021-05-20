@@ -73,6 +73,7 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 }
 
 func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*PropertyValue, children ...*Block) (*Page, error) {
+	parent.Type = ""
 	body := struct {
 		Parent     Parent                    `json:"parent,omitempty"`
 		Properties map[string]*PropertyValue `json:"properties"`
@@ -177,7 +178,6 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 	if err != nil {
 		return err
 	}
-
 
 	defer rsp.Body.Close()
 

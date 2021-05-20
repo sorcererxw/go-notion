@@ -1,6 +1,9 @@
 package notion
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Page struct {
 	Object         ObjectType               `json:"object,omitempty"`
@@ -12,6 +15,17 @@ type Page struct {
 	Properties     map[string]PropertyValue `json:"properties,omitempty"`
 	Parent         Parent                   `json:"parent,omitempty"`
 }
+
+func (p *Page) MarshalJSON() ([]byte, error) {
+	if p == nil {
+		return json.Marshal(nil)
+	}
+	p.Object = ObjectPage
+	type Alias Page
+	return json.Marshal((*Alias)(p))
+}
+
+var _ json.Marshaler = &Page{}
 
 // ParentType is type of Parent.
 type ParentType string

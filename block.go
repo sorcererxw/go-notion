@@ -1,6 +1,9 @@
 package notion
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // BlockType is type of Block.
 type BlockType string
@@ -37,8 +40,19 @@ type Block struct {
 	ChildPage        *ChildPage `json:"child_page,omitempty"`
 }
 
+func (b *Block) MarshalJSON() ([]byte, error) {
+	if b == nil {
+		return json.Marshal(nil)
+	}
+	b.Object = ObjectBlock
+	type Alias Block
+	return json.Marshal((*Alias)(b))
+}
+
+var _ json.Marshaler = &Block{}
+
 type Paragraph struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
