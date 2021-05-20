@@ -1,7 +1,9 @@
 package notion
 
+// RichTextType is type of RichText.
 type RichTextType string
 
+// RichTextType enums.
 const (
 	RichTextText     RichTextType = "text"
 	RichTextMention  RichTextType = "mention"
@@ -43,8 +45,10 @@ type Annotation struct {
 	Color Color `json:"color,omitempty"`
 }
 
+// Color is color definition of Notion.
 type Color string
 
+// Color enums.
 const (
 	ColorDefault          Color = "default"
 	ColorGray             Color = "gray"
@@ -84,6 +88,7 @@ type Link struct {
 // MentionType is type of Mention.
 type MentionType string
 
+// MentionType enums.
 const (
 	MentionUser     MentionType = "user"
 	MentionPage     MentionType = "page"

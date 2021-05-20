@@ -8,6 +8,7 @@ import (
 // BlockType is type of Block.
 type BlockType string
 
+// BlockType enums.
 const (
 	BlockParagraph        BlockType = "paragraph"
 	BlockHeading1         BlockType = "heading_1"
@@ -35,11 +36,12 @@ type Block struct {
 	Paragraph        *Paragraph `json:"paragraph,omitempty"`
 	BulletedListItem *ListItem  `json:"bulleted_list_item,omitempty"`
 	NumberedListItem *ListItem  `json:"numbered_list_item,omitempty"`
-	ToDo             *Todo      `json:"to_do,omitempty"`
+	ToDo             *ToDo      `json:"to_do,omitempty"`
 	Toggle           *Toggle    `json:"toggle,omitempty"`
 	ChildPage        *ChildPage `json:"child_page,omitempty"`
 }
 
+// MarshalJSON marshal Block to json and set Object to "block" automatically.
 func (b *Block) MarshalJSON() ([]byte, error) {
 	if b == nil {
 		return json.Marshal(nil)
@@ -51,12 +53,13 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 
 var _ json.Marshaler = &Block{}
 
+// Paragraph is paragraph block.
 type Paragraph struct {
 	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
-// Heading is the common type of Heading1, Heading2, Heading3
+// Heading is the common type of Heading1, Heading2, Heading3.
 type Heading struct {
 	Text []*RichText `json:"text,omitempty"`
 }
@@ -67,17 +70,20 @@ type ListItem struct {
 	Children []*Block    `json:"children,omitempty"`
 }
 
-type Todo struct {
+// ToDo is todo item.
+type ToDo struct {
 	Text     []*RichText `json:"text,omitempty"`
 	Children []*Block    `json:"children,omitempty"`
 	Checked  bool        `json:"checked,omitempty"`
 }
 
+// Toggle is toggle item.
 type Toggle struct {
 	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 }
 
+// ChildPage contains information of child page.
 type ChildPage struct {
 	Title string `json:"title,omitempty"`
 }

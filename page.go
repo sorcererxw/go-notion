@@ -20,6 +20,7 @@ type Page struct {
 	Parent         Parent                   `json:"parent,omitempty"`
 }
 
+// MarshalJSON marshal Page to json and set Object to "page" automatically.
 func (p *Page) MarshalJSON() ([]byte, error) {
 	if p == nil {
 		return json.Marshal(nil)
@@ -34,6 +35,7 @@ var _ json.Marshaler = &Page{}
 // ParentType is type of Parent.
 type ParentType string
 
+// ParentType enums.
 const (
 	ParentDatabase  ParentType = "database_id"
 	ParentPage      ParentType = "page_id"
@@ -63,8 +65,10 @@ func NewWorkspaceParent() Parent {
 	return Parent{Type: ParentWorkspace, Workspace: true}
 }
 
+// FormulaValueType is type of formula value.
 type FormulaValueType string
 
+// FormulaValueType enums.
 const (
 	FormulaValueString FormulaValueType = "string"
 	FormulaValueNumber FormulaValueType = "number"
@@ -72,6 +76,8 @@ const (
 	FormulaValueDate   FormulaValueType = "date"
 )
 
+// FormulaValue  represents the result of evaluating a formula described in the database's properties.
+// These objects contain a type key and a key corresponding with the value of type.
 type FormulaValue struct {
 	Type    FormulaValueType `json:"type,omitempty"`
 	String  string           `json:"string,omitempty"`
@@ -80,21 +86,29 @@ type FormulaValue struct {
 	Date    *Date            `json:"date,omitempty"`
 }
 
+// RollupValueType is type of rollup value.
 type RollupValueType string
 
+// RollupValueType enums.
 const (
 	RollupValueString RollupValueType = "string"
 	RolluoValueDate   RollupValueType = "date"
 	RolluoValueArray  RollupValueType = "array"
 )
 
+// RollupValue represent the result of evaluating a rollup described in the database's properties.
+// These objects contain a type key and a key corresponding with the value of type.
+// The value is an object containing type-specific data.
 type RollupValue struct {
-	Type   RollupValueType    `json:"type,omitempty"`
-	Number float64            `json:"number,omitempty"`
-	Date   *Date              `json:"date,omitempty"`
-	Array  []*ObjectReference `json:"array,omitempty"`
+	Type   RollupValueType `json:"type,omitempty"`
+	Number float64         `json:"number,omitempty"`
+	Date   *Date           `json:"date,omitempty"`
+	// The element is exactly like property value object, but without the "id" key.
+	Array []*PropertyValue `json:"array,omitempty"`
 }
 
+// PropertyValue is the property value of Page.
+// It must contain a key corresponding with the value of type. The value is an object containing type-specific data.
 type PropertyValue struct {
 	ID          string          `json:"id,omitempty"`
 	Type        PropertyType    `json:"type,omitempty"`
@@ -106,18 +120,27 @@ type PropertyValue struct {
 	Date        *Date           `json:"date,omitempty"`
 	Formula     *FormulaValue   `json:"formula,omitempty"`
 	// Relation is an array of page references.
-	Relation       []*ObjectReference `json:"relation,omitempty"`
-	Rollup         *RollupValue       `json:"rollup,omitempty"`
-	People         []*User            `json:"people,omitempty"`
-	Files          []*File            `json:"files,omitempty"`
-	Checkbox       bool               `json:"checkbox,omitempty"`
-	URL            string             `json:"url,omitempty"`
-	Email          string             `json:"email,omitempty"`
-	Phone          string             `json:"phone,omitempty"`
-	CreatedBy      *User              `json:"created_by,omitempty"`
-	LastEditedBy   *User              `json:"last_edited_by,omitempty"`
-	CreatedTime    *time.Time         `json:"created_time,omitempty"`
-	LastEditedTime *time.Time         `json:"last_edited_time,omitempty"`
+	Relation []*ObjectReference `json:"relation,omitempty"`
+	Rollup   *RollupValue       `json:"rollup,omitempty"`
+	// People is an array of user objects.
+	People []*User `json:"people,omitempty"`
+	// Files is an array of file references.
+	Files    []*File `json:"files,omitempty"`
+	Checkbox bool    `json:"checkbox,omitempty"`
+	// URL describes a web address (i.e. "http://worrydream.com/EarlyHistoryOfSmalltalk/").
+	URL string `json:"url,omitempty"`
+	// Email describes an email address (i.e. "hello@example.org").
+	Email string `json:"email,omitempty"`
+	// PhoneNumber describes a phone number. No structure is enforced.
+	PhoneNumber string `json:"phone_number,omitempty"`
+	// CreatedBy describes the user who created this page.
+	CreatedBy *User `json:"created_by,omitempty"`
+	// LastEditedBy describes the user who last updated this page.
+	LastEditedBy *User `json:"last_edited_by,omitempty"`
+	// CreatedTime contains the date and time when this page was created.
+	CreatedTime *time.Time `json:"created_time,omitempty"`
+	// LastEditedTime contains the date and time when this page was last updated.
+	LastEditedTime *time.Time `json:"last_edited_time,omitempty"`
 }
 
 // NewTitlePropertyValue creates a TitlePropertyValue.
@@ -180,15 +203,18 @@ func NewEmailPropertyValue(email string) *PropertyValue {
 	return &PropertyValue{Type: PropertyEmail, Email: email}
 }
 
-// NewPhonePropertyValue creates a PhonePropertyValue.
-func NewPhonePropertyValue(phone string) *PropertyValue {
-	return &PropertyValue{Type: PropertyPhoneNumber, Phone: phone}
+// NewPhoneNumberPropertyValue creates a PhonePropertyValue.
+func NewPhoneNumberPropertyValue(phoneNumber string) *PropertyValue {
+	return &PropertyValue{Type: PropertyPhoneNumber, PhoneNumber: phoneNumber}
 }
 
+// File reference is an object with an name property,
+// with a string value corresponding to a filename of the original file upload (i.e. "Whole_Earth_Catalog.jpg").
 type File struct {
 	Name string `json:"name,omitempty"`
 }
 
+// Date represents a datetime or time range.
 type Date struct {
 	Start time.Time
 	// If null, this property's date value is not a range.

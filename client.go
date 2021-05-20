@@ -27,6 +27,7 @@ type Settings struct {
 	HTTPClient *http.Client
 }
 
+// NewClient creates a new API client.
 func NewClient(settings Settings) API {
 	c := &Client{
 		token:      settings.Token,
