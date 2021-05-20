@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+// ErrCode is the "code" field in Notion error
 type ErrCode string
 
 const (
@@ -36,6 +37,7 @@ const (
 	ErrCodeServiceUnavailable ErrCode = "service_unavailable"
 )
 
+// Error is Notion error response body.
 type Error struct {
 	Status  int     `json:"status,omitempty"`
 	Code    ErrCode `json:"code,omitempty"`

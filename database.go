@@ -2,6 +2,9 @@ package notion
 
 import "time"
 
+// Database objects describe the property schema of a database in Notion.
+// Page are the items (or children) in a database.
+// Page property values must conform to the property objects laid out in the parent database object.
 type Database struct {
 	Object         ObjectType          `json:"object,omitempty"`
 	ID             string              `json:"id,omitempty"`

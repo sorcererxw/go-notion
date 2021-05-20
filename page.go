@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+// Page object contains the property values of a single Notion page.
+// All pages have a parent. If the parent is a database, the property values conform to the schema laid out database's properties.
+// Otherwise, the only property value is the title.
+// Page content is available as blocks. The content can be read using retrieve block children and appended using append block children.
 type Page struct {
 	Object         ObjectType               `json:"object,omitempty"`
 	ID             string                   `json:"id,omitempty"`
@@ -44,14 +48,17 @@ type Parent struct {
 	Workspace  bool       `json:"workspace,omitempty"`
 }
 
+// NewDatabaseParent creates a database parent.
 func NewDatabaseParent(databaseID string) Parent {
 	return Parent{Type: ParentDatabase, DatabaseID: databaseID}
 }
 
+// NewPageParent creates a page parent.
 func NewPageParent(pageID string) Parent {
 	return Parent{Type: ParentPage, PageID: pageID}
 }
 
+// NewWorkspaceParent creates a workspace parent.
 func NewWorkspaceParent() Parent {
 	return Parent{Type: ParentWorkspace, Workspace: true}
 }
@@ -113,42 +120,67 @@ type PropertyValue struct {
 	LastEditedTime *time.Time         `json:"last_edited_time,omitempty"`
 }
 
+// NewTitlePropertyValue creates a TitlePropertyValue.
 func NewTitlePropertyValue(texts ...*RichText) *PropertyValue {
 	return &PropertyValue{Type: PropertyTitle, Title: texts}
 }
+
+// NewRichTextPropertyValue creates a RichTextPropertyValue.
 func NewRichTextPropertyValue(texts ...*RichText) *PropertyValue {
 	return &PropertyValue{Type: PropertyRichText, RichText: texts}
 }
+
+// NewNumberPropertyValue creates a NumberPropertyValue.
 func NewNumberPropertyValue(number float64) *PropertyValue {
 	return &PropertyValue{Type: PropertyNumber, Number: number}
 }
+
+// NewSelectPropertyValue creates a SelectPropertyValue.
 func NewSelectPropertyValue(option *SelectOption) *PropertyValue {
 	return &PropertyValue{Type: PropertySelect, Select: option}
 }
+
+// NewMultiSelectPropertyValue creates a MultiSelectPropertyValue.
 func NewMultiSelectPropertyValue(options ...*SelectOption) *PropertyValue {
 	return &PropertyValue{Type: PropertyMultiSelect, MultiSelect: options}
 }
+
+// NewDatePropertyValue creates a DatePropertyValue.
 func NewDatePropertyValue(date *Date) *PropertyValue {
 	return &PropertyValue{Type: PropertyDate, Date: date}
 }
+
+// NewRelationPropertyValue creates a RelationPropertyValue.
 func NewRelationPropertyValue(relation ...*ObjectReference) *PropertyValue {
 	return &PropertyValue{Type: PropertyRelation, Relation: relation}
 }
+
+// NewPeoplePropertyValue creates a PeoplePropertyValue.
 func NewPeoplePropertyValue(people ...*User) *PropertyValue {
 	return &PropertyValue{Type: PropertyPeople, People: people}
 }
+
+// NewFilesPropertyValue creates a FilesPropertyValue.
 func NewFilesPropertyValue(files ...*File) *PropertyValue {
 	return &PropertyValue{Type: PropertyFile, Files: files}
 }
+
+// NewCheckboxPropertyValue creates a CheckboxPropertyValue.
 func NewCheckboxPropertyValue(check bool) *PropertyValue {
 	return &PropertyValue{Type: PropertyCheckbox, Checkbox: check}
 }
+
+// NewURLPropertyValue creates a URLPropertyValue.
 func NewURLPropertyValue(url string) *PropertyValue {
 	return &PropertyValue{Type: PropertyURL, URL: url}
 }
+
+// NewEmailPropertyValue creates a EmailPropertyValue.
 func NewEmailPropertyValue(email string) *PropertyValue {
 	return &PropertyValue{Type: PropertyEmail, Email: email}
 }
+
+// NewPhonePropertyValue creates a PhonePropertyValue.
 func NewPhonePropertyValue(phone string) *PropertyValue {
 	return &PropertyValue{Type: PropertyPhoneNumber, Phone: phone}
 }

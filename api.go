@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const APIVersion = "2021-05-13"
+const apiVersion = "2021-05-13"
 
 // API is declaration of Notion.so APIs.
 type API interface {
@@ -193,7 +193,6 @@ type (
 	}
 )
 
-// Search related types.
 type (
 	// SearchParam is param of Search.
 	SearchParam struct {

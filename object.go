@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// ObjectType is enum of Notion top level resource types.
 type ObjectType string
 
 const (

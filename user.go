@@ -4,8 +4,10 @@ package notion
 type UserType string
 
 const (
+	// UserPerson means User objects represent people.
 	UserPerson UserType = "person"
-	UserBot    UserType = "bot"
+	// UserBot means User objects represent bot.
+	UserBot UserType = "bot"
 )
 
 // The User object represents a user in a Notion workspace.

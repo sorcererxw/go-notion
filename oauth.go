@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+// OAuthAccessToken is the response of OAuth token exchanging.
+// You can use AccessToken as Client token to access normal Notion api.
 type OAuthAccessToken struct {
 	AccessToken   string `json:"access_token,omitempty"`
 	WorkspaceName string `json:"workspace_name,omitempty"`
@@ -14,6 +16,7 @@ type OAuthAccessToken struct {
 	BotID         string `json:"bot_id,omitempty"`
 }
 
+// OAuthClient is client to exchange OAuth token.
 type OAuthClient struct {
 	clientID     string
 	clientSecret string
@@ -21,6 +24,7 @@ type OAuthClient struct {
 	httpclient   *http.Client
 }
 
+// NewOAuthClient creates a OAuthClient.
 func NewOAuthClient(clientID, clientSecret, redirectURI string) *OAuthClient {
 	return &OAuthClient{
 		clientID:     clientID,
@@ -30,6 +34,7 @@ func NewOAuthClient(clientID, clientSecret, redirectURI string) *OAuthClient {
 	}
 }
 
+// ExchangeAccessToken exchanges the auth code to api token.
 func (c *OAuthClient) ExchangeAccessToken(ctx context.Context, code string) (*OAuthAccessToken, error) {
 	b, err := json.Marshal(&struct {
 		GrantType   string `json:"grant_type,omitempty"`

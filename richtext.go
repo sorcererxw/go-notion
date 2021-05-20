@@ -8,6 +8,10 @@ const (
 	RichTextEquation RichTextType = "equation"
 )
 
+// RichText objects contain data for displaying formatted text, mentions, and equations.
+// RichText object also contains annotations for style information.
+// Arrays of rich text objects are used within property objects
+// and property value objects to create what a user sees as a single text value in Notion.
 type RichText struct {
 	// The plain text without annotations.
 	PlainText string `json:"plain_text,omitempty"`
@@ -107,6 +111,7 @@ type Mention struct {
 	Date *Date `json:"date,omitempty"`
 }
 
+// Equation .
 type Equation struct {
 	// Expression The LaTeX string representing this inline equation.
 	Expression string `json:"expression,omitempty"`
