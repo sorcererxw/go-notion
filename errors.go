@@ -44,9 +44,7 @@ type Error struct {
 	Message string  `json:"message,omitempty"`
 }
 
-func (e *Error) Error() string {
-	return e.Message
-}
+func (e *Error) Error() string { return e.Message }
 
 // AsError tries casting the basic error to notion error
 func AsError(e error) (err *Error, ok bool) {
