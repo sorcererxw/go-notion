@@ -20,6 +20,7 @@ type API interface {
 	// CreatePage creates a new page.
 	CreatePage(ctx context.Context, parent Parent, properties map[string]*PropertyValue, children ...*Block) (*Page, error)
 	// UpdatePageProperties updates pages' properties.
+	// The keys of properties are the names or IDs of the property and the values are property values.
 	UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PropertyValue) (*Page, error)
 	// RetrieveBlockChildren retrieves child blocks of block.
 	RetrieveBlockChildren(ctx context.Context, blockID string, pageSize int32, startCursor string) (results []*Block, nextCursor string, hasMore bool, err error)
@@ -201,6 +202,7 @@ type (
 		Sort *Sort `json:"sort,omitempty"`
 		// The filter parameter can be used to query specifically for only pages or only databases.
 		// When supplied, filters the results based on the provided criteria.
+		// Limitation: Currently only a single sort is allowed and is limited to last_edited_time.
 		Filter      *SearchFilter `json:"filter,omitempty"`
 		StartCursor string        `json:"start_cursor,omitempty"`
 		PageSize    int32         `json:"page_size,omitempty"`

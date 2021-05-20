@@ -18,8 +18,9 @@ const (
 	BlockNumberedListItem BlockType = "numbered_list_item"
 	BlockToDo             BlockType = "to_do"
 	BlockToggle           BlockType = "toggle"
-	BlockChildPage        BlockType = "child_page"
-	BlockUnsupported      BlockType = "unsupported"
+	// BlockChildPage is not support appending currently.
+	BlockChildPage   BlockType = "child_page"
+	BlockUnsupported BlockType = "unsupported"
 )
 
 // Block object represents content within Notion.
@@ -72,7 +73,7 @@ type ListItem struct {
 
 // ToDo is todo item.
 type ToDo struct {
-	Text     []*RichText `json:"text,omitempty"`
+	Text     []*RichText `json:"text"`
 	Children []*Block    `json:"children,omitempty"`
 	Checked  bool        `json:"checked,omitempty"`
 }

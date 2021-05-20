@@ -81,7 +81,8 @@ type Text struct {
 
 // Link objects contain a type key whose value is always "url" and a url key whose value is a web address.
 type Link struct {
-	URL  string `json:"url,omitempty"`
+	URL string `json:"url,omitempty"`
+	// Type is always be "url".
 	Type string `json:"type,omitempty"`
 }
 
