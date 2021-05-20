@@ -22,8 +22,11 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Run Tests
+        env:
+          NOTION_TOKEN: ${{ secret.NOTION_TOKEN }}
+          CONTAINER_DATABASE: ${{ secret.CONTAINNER_DATABASE }}
         run: |
-          go test -race --coverprofile=coverage.coverprofile --covermode=atomic ./...
+          go test -race -tags=e2e --coverprofile=coverage.coverprofile --covermode=atomic ./...
 
       - name: Upload Coverage to Codecov
         if: success() && matrix.go == 1.16 && matrix.os == 'ubuntu-latest'

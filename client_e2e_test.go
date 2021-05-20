@@ -22,7 +22,7 @@ func TestClientE2E(t *testing.T) {
 	t.Run("create page in database", func(t *testing.T) {
 		p, err := client.CreatePage(
 			context.Background(),
-			notion.NewDatabaseParent(os.Getenv("CONTAINER_PAGE")),
+			notion.NewDatabaseParent(os.Getenv("CONTAINER_DATABASE")),
 			map[string]*notion.PropertyValue{
 				"title": notion.NewTitlePropertyValue(
 					[]*notion.RichText{
@@ -56,7 +56,7 @@ func TestClientE2E(t *testing.T) {
 				},
 			},
 			&notion.Block{
-				Type:      notion.BlockParagraph,
+				Type: notion.BlockParagraph,
 				Paragraph: &notion.Paragraph{
 					Text: []*notion.RichText{},
 				},
