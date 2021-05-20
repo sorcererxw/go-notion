@@ -3,12 +3,12 @@ package notion
 import "time"
 
 type Database struct {
-	Object         ObjectType                  `json:"object,omitempty"`
-	ID             string                      `json:"id,omitempty"`
-	CreatedTime    time.Time                   `json:"created_time,omitempty"`
-	LastEditedTime time.Time                   `json:"last_edited_time,omitempty"`
-	Title          []*RichText                 `json:"title,omitempty"`
-	Properties     map[string]DatabaseProperty `json:"properties,omitempty"`
+	Object         ObjectType          `json:"object,omitempty"`
+	ID             string              `json:"id,omitempty"`
+	CreatedTime    time.Time           `json:"created_time,omitempty"`
+	LastEditedTime time.Time           `json:"last_edited_time,omitempty"`
+	Title          []*RichText         `json:"title,omitempty"`
+	Properties     map[string]Property `json:"properties,omitempty"`
 }
 
 type PropertyType string
@@ -51,8 +51,8 @@ const (
 	NumberFormatYuan             NumberFormat = "yuan"
 )
 
-// DatabaseProperty is mix type of database property.
-type DatabaseProperty struct {
+// Property is mix type of database property.
+type Property struct {
 	ID       string       `json:"id,omitempty"`
 	Type     PropertyType `json:"type,omitempty"`
 	Title    *struct{}    `json:"title,omitempty"`

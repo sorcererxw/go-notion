@@ -4,16 +4,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type Client struct {
 	token      string
 	endpoint   string
+	debug      bool
 	httpclient *http.Client
 }
 
@@ -33,9 +35,7 @@ func NewClient(settings Settings) API {
 		c.endpoint = "https://api.notion.com"
 	}
 	if c.httpclient == nil {
-		c.httpclient = &http.Client{
-			Timeout: 10 * time.Second,
-		}
+		c.httpclient = http.DefaultClient
 	}
 	return c
 }
@@ -72,11 +72,11 @@ func (c *Client) RetrievePage(ctx context.Context, pageID string) (*Page, error)
 	return &page, nil
 }
 
-func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*DatabaseProperty, children ...*Block) (*Page, error) {
+func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[string]*PropertyValue, children ...*Block) (*Page, error) {
 	body := struct {
-		Parent     Parent                       `json:"parent,omitempty"`
-		Properties map[string]*DatabaseProperty `json:"properties"`
-		Children   []*Block                     `json:"children,omitempty"`
+		Parent     Parent                    `json:"parent,omitempty"`
+		Properties map[string]*PropertyValue `json:"properties"`
+		Children   []*Block                  `json:"children,omitempty"`
 	}{
 		Parent:     parent,
 		Properties: properties,
@@ -89,9 +89,9 @@ func (c *Client) CreatePage(ctx context.Context, parent Parent, properties map[s
 	return &page, nil
 }
 
-func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*DatabaseProperty) (*Page, error) {
+func (c *Client) UpdatePageProperties(ctx context.Context, pageID string, properties map[string]*PropertyValue) (*Page, error) {
 	body := struct {
-		Properties map[string]*DatabaseProperty `json:"properties,omitempty"`
+		Properties map[string]*PropertyValue `json:"properties,omitempty"`
 	}{
 		Properties: properties,
 	}
@@ -152,7 +152,7 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		if err != nil {
 			return err
 		}
-		body = bytes.NewBuffer(b)
+		body = bytes.NewReader(b)
 	}
 
 	requestURL := strings.TrimSuffix(c.endpoint, "/") + path
@@ -169,10 +169,15 @@ func (c *Client) request(ctx context.Context, method string, path string, in int
 		fn(req)
 	}
 
+	if c.debug {
+		b, _ := httputil.DumpRequest(req, true)
+		fmt.Println(string(b))
+	}
 	rsp, err := c.httpclient.Do(req)
 	if err != nil {
 		return err
 	}
+
 
 	defer rsp.Body.Close()
 

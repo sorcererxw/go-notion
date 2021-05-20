@@ -26,9 +26,9 @@ type Block struct {
 	LastEditedTime   time.Time  `json:"last_edited_time,omitempty"`
 	HasChildren      bool       `json:"has_children,omitempty"`
 	Type             BlockType  `json:"type,omitempty"`
-	Heading1         *Heading   `json:"heading1,omitempty"`
-	Heading2         *Heading   `json:"heading2,omitempty"`
-	Heading3         *Heading   `json:"heading3,omitempty"`
+	Heading1         *Heading   `json:"heading_1,omitempty"`
+	Heading2         *Heading   `json:"heading_2,omitempty"`
+	Heading3         *Heading   `json:"heading_3,omitempty"`
 	Paragraph        *Paragraph `json:"paragraph,omitempty"`
 	BulletedListItem *ListItem  `json:"bulleted_list_item,omitempty"`
 	NumberedListItem *ListItem  `json:"numbered_list_item,omitempty"`

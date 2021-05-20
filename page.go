@@ -3,14 +3,14 @@ package notion
 import "time"
 
 type Page struct {
-	Object         ObjectType              `json:"object,omitempty"`
-	ID             string                  `json:"id,omitempty"`
-	Title          string                  `json:"title,omitempty"`
-	CreatedTime    time.Time               `json:"created_time"`
-	LastEditedTime time.Time               `json:"last_edited_time"`
-	Archived       bool                    `json:"archived,omitempty"`
-	Properties     map[string]PageProperty `json:"properties,omitempty"`
-	Parent         Parent                  `json:"parent,omitempty"`
+	Object         ObjectType               `json:"object,omitempty"`
+	ID             string                   `json:"id,omitempty"`
+	Title          string                   `json:"title,omitempty"`
+	CreatedTime    time.Time                `json:"created_time"`
+	LastEditedTime time.Time                `json:"last_edited_time"`
+	Archived       bool                     `json:"archived,omitempty"`
+	Properties     map[string]PropertyValue `json:"properties,omitempty"`
+	Parent         Parent                   `json:"parent,omitempty"`
 }
 
 // ParentType is type of Parent.
@@ -30,16 +30,16 @@ type Parent struct {
 	Workspace  bool       `json:"workspace,omitempty"`
 }
 
-func NewDatabaseParent(databaseID string) *Parent {
-	return &Parent{Type: ParentDatabase, DatabaseID: databaseID}
+func NewDatabaseParent(databaseID string) Parent {
+	return Parent{Type: ParentDatabase, DatabaseID: databaseID}
 }
 
-func NewPageParent(pageID string) *Parent {
-	return &Parent{Type: ParentDatabase, PageID: pageID}
+func NewPageParent(pageID string) Parent {
+	return Parent{Type: ParentPage, PageID: pageID}
 }
 
-func NewWorkspaceParent() *Parent {
-	return &Parent{Type: ParentDatabase, Workspace: true}
+func NewWorkspaceParent() Parent {
+	return Parent{Type: ParentWorkspace, Workspace: true}
 }
 
 type FormulaValueType string
@@ -74,7 +74,7 @@ type RollupValue struct {
 	Array  []*ObjectReference `json:"array,omitempty"`
 }
 
-type PageProperty struct {
+type PropertyValue struct {
 	ID          string          `json:"id,omitempty"`
 	Type        PropertyType    `json:"type,omitempty"`
 	Title       []*RichText     `json:"title,omitempty"`
@@ -97,6 +97,46 @@ type PageProperty struct {
 	LastEditedBy   *User              `json:"last_edited_by,omitempty"`
 	CreatedTime    *time.Time         `json:"created_time,omitempty"`
 	LastEditedTime *time.Time         `json:"last_edited_time,omitempty"`
+}
+
+func NewTitlePropertyValue(texts ...*RichText) *PropertyValue {
+	return &PropertyValue{Type: PropertyTitle, Title: texts}
+}
+func NewRichTextPropertyValue(texts ...*RichText) *PropertyValue {
+	return &PropertyValue{Type: PropertyRichText, RichText: texts}
+}
+func NewNumberPropertyValue(number float64) *PropertyValue {
+	return &PropertyValue{Type: PropertyNumber, Number: number}
+}
+func NewSelectPropertyValue(option *SelectOption) *PropertyValue {
+	return &PropertyValue{Type: PropertySelect, Select: option}
+}
+func NewMultiSelectPropertyValue(options ...*SelectOption) *PropertyValue {
+	return &PropertyValue{Type: PropertyMultiSelect, MultiSelect: options}
+}
+func NewDatePropertyValue(date *Date) *PropertyValue {
+	return &PropertyValue{Type: PropertyDate, Date: date}
+}
+func NewRelationPropertyValue(relation ...*ObjectReference) *PropertyValue {
+	return &PropertyValue{Type: PropertyRelation, Relation: relation}
+}
+func NewPeoplePropertyValue(people ...*User) *PropertyValue {
+	return &PropertyValue{Type: PropertyPeople, People: people}
+}
+func NewFilesPropertyValue(files ...*File) *PropertyValue {
+	return &PropertyValue{Type: PropertyFile, Files: files}
+}
+func NewCheckboxPropertyValue(check bool) *PropertyValue {
+	return &PropertyValue{Type: PropertyCheckbox, Checkbox: check}
+}
+func NewURLPropertyValue(url string) *PropertyValue {
+	return &PropertyValue{Type: PropertyURL, URL: url}
+}
+func NewEmailPropertyValue(email string) *PropertyValue {
+	return &PropertyValue{Type: PropertyEmail, Email: email}
+}
+func NewPhonePropertyValue(phone string) *PropertyValue {
+	return &PropertyValue{Type: PropertyPhoneNumber, Phone: phone}
 }
 
 type File struct {
