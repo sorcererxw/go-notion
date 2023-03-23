@@ -212,6 +212,18 @@ func NewPhoneNumberPropertyValue(phoneNumber string) *PropertyValue {
 // with a string value corresponding to a filename of the original file upload (i.e. "Whole_Earth_Catalog.jpg").
 type File struct {
 	Name string `json:"name,omitempty"`
+	Type string `json:"type,omitempty"`
+	External *ExternalFile `json:"external,omitempty"`
+	Internal *InternalFile `json:"file,omitempty"`
+}
+
+type ExternalFile struct {
+	URL string `json:"url,omitempty"`
+}
+
+type InternalFile struct {
+	URL	   string `json:"url"`
+	ExpiryTime time.Time `json:"exipry_time"`
 }
 
 // Date represents a datetime or time range.
